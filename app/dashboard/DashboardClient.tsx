@@ -24,7 +24,6 @@ import {
   Menu,
   X,
   Mail,
-  MessageCircle,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -57,7 +56,6 @@ const navigationItems = [
       { name: "Forms", icon: FormInput, path: "/dashboard/forms" },
       { name: "Triggers", icon: Timer, path: "/dashboard/triggers" },
       { name: "Emails", icon: Mail, path: "/dashboard/emails" },
-      { name: "WhatsApp", icon: MessageCircle, path: "/dashboard/whatsapp" },
     ],
   },
   {

@@ -299,19 +299,6 @@ export const emailLogs = pgTable("email_logs", {
   sentAt: timestamp("sent_at").defaultNow().notNull(),
 });
 
-// ─── WhatsApp Accounts ────────────────────────────────────────────────────────
-
-export const waAccounts = pgTable("wa_accounts", {
-  id: uuid("id").primaryKey().defaultRandom(),
-  userId: text("user_id").notNull(),
-  name: text("name").notNull(),
-  phone: text("phone"),
-  status: text("status").notNull().default("disconnected"), // disconnected, connecting, connected
-  sessionData: text("session_data"),
-  createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().notNull(),
-});
-
 // ─── Date Triggers ────────────────────────────────────────────────────────────
 
 export const dateTriggers = pgTable("date_triggers", {
