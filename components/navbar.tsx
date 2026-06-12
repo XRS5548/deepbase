@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { useState } from "react"
-import { Menu, X, LayoutDashboard } from "lucide-react"
+import { Menu, X, LayoutDashboard, Box } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { authClient } from "@/lib/auth-client"
 
@@ -60,8 +60,9 @@ export default function Navbar() {
   return (
     <nav className="relative z-50 bg-hd-bg border-b-[3px] border-hd-fg">
       <div className="max-w-5xl mx-auto px-6 py-4 flex items-center justify-between" style={{ backgroundImage: "radial-gradient(var(--hd-muted) 1px, transparent 1px)", backgroundSize: "24px 24px" }}>
-        <Link href="/" className="font-heading text-2xl text-hd-fg no-underline">
-          Place<span className="text-hd-accent">.</span>Dept
+        <Link href="/" className="font-heading text-2xl text-hd-fg no-underline inline-flex items-center gap-2">
+          <Box className="w-7 h-7 text-hd-accent" strokeWidth={2.5} />
+          Deep<span className="text-hd-accent">.</span>Base
         </Link>
 
         <div className="hidden md:flex items-center gap-8">

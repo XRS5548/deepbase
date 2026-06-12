@@ -20,7 +20,7 @@ import {
   FormInput,
   Timer,
   Activity,
-  Zap,
+  Box,
   Menu,
   X,
   Mail,
@@ -189,11 +189,11 @@ function SidebarContent({ sidebarOpen, setSidebarOpen, pathname, isMobile, onClo
       <div className="p-6 flex items-center justify-between">
         <div className="flex items-center space-x-3 min-w-0">
           <div className="w-8 h-8 bg-gradient-to-br from-blue-600 to-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
-            <Zap className="w-5 h-5 text-white" />
+            <Box className="w-5 h-5 text-white" />
           </div>
           {sidebarOpen && (
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="text-xl font-bold text-foreground truncate">
-              DataVault
+              DeepBase
             </motion.span>
           )}
         </div>
