@@ -1,4 +1,5 @@
 import { toastApi } from "@/lib/toast-api"
+import { api } from "@/lib/proxy"
 
 export type NotificationItem = {
   id: string
@@ -10,15 +11,6 @@ export type NotificationItem = {
   buttonText: string | null
   read: boolean
   createdAt: string
-}
-
-async function api<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error || `Request failed: ${res.status}`)
-  }
-  return res.json()
 }
 
 export function getNotifications(): Promise<NotificationItem[]> {

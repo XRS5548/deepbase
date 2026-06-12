@@ -1,14 +1,6 @@
 import type { FormWithMeta, FormDetail, FormSubmission, SimpleTeam } from "@/lib/actions/forms"
 import { toastApi } from "@/lib/toast-api"
-
-async function api<T>(url: string, init?: RequestInit): Promise<T> {
-  const res = await fetch(url, init)
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error || `Request failed: ${res.status}`)
-  }
-  return res.json()
-}
+import { api } from "@/lib/proxy"
 
 export function getUserForms(): Promise<FormWithMeta[]> {
   return api("/api/forms")

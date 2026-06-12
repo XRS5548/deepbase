@@ -299,6 +299,39 @@ export const emailLogs = pgTable("email_logs", {
   sentAt: timestamp("sent_at").defaultNow().notNull(),
 });
 
+// ─── Workflows ────────────────────────────────────────────────────────────
+
+export const workflows = pgTable("workflows", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  name: text("name").notNull(),
+  description: text("description"),
+  icon: text("icon"),
+  bgColor: text("bg_color"),
+  steps: jsonb("steps").notNull().default([]),
+  nodes: jsonb("nodes").notNull().default([]),
+  edges: jsonb("edges").notNull().default([]),
+  webhookSecret: text("webhook_secret"),
+  isActive: boolean("is_active").default(true).notNull(),
+  createdBy: text("created_by").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+});
+
+// ─── Workflow Executions ─────────────────────────────────────────────────
+
+export const workflowExecutions = pgTable("workflow_executions", {
+  id: uuid("id").primaryKey().defaultRandom(),
+  workflowId: uuid("workflow_id")
+    .notNull()
+    .references(() => workflows.id, { onDelete: "cascade" }),
+  triggeredBy: text("triggered_by"),       // "manual" | "webhook" | user_id
+  status: text("status").notNull(),        // "running" | "completed" | "failed"
+  stepsLog: jsonb("steps_log").notNull().default([]),
+  error: text("error"),
+  startedAt: timestamp("started_at").defaultNow().notNull(),
+  completedAt: timestamp("completed_at"),
+});
+
 // ─── Date Triggers ────────────────────────────────────────────────────────────
 
 export const dateTriggers = pgTable("date_triggers", {

@@ -1,3 +1,5 @@
+import { api } from "@/lib/proxy"
+
 export type ActivityItem = {
   id: string
   entity: string
@@ -9,15 +11,6 @@ export type ActivityItem = {
   createdAt: string
   performerName: string | null
   performerEmail: string | null
-}
-
-async function api<T>(url: string): Promise<T> {
-  const res = await fetch(url)
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({}))
-    throw new Error(body.error || `Request failed: ${res.status}`)
-  }
-  return res.json()
 }
 
 export function getActivity(): Promise<ActivityItem[]> {

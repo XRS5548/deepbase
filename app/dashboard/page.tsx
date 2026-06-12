@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   Loader2,
   RefreshCw,
+  Workflow,
 } from "lucide-react"
 import { toast } from "sonner"
 import Link from "next/link"
@@ -35,15 +36,17 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContaine
 const statConfig = [
   { label: "Triggers", icon: Timer, key: "triggers" as const, href: "/dashboard/triggers", color: "amber" },
   { label: "Databases", icon: Database, key: "databases" as const, href: "/dashboard/databases", color: "blue" },
+  { label: "Workflows", icon: Workflow, key: "workflows" as const, href: "/dashboard/workflows", color: "cyan" },
   { label: "Forms", icon: FileText, key: "forms" as const, href: "/dashboard/forms", color: "emerald" },
   { label: "Teams", icon: Users, key: "teams" as const, href: "/dashboard/teams", color: "violet" },
 ]
 
 const colorStyles: Record<string, { card: string; icon: string; text: string; ring: string }> = {
-  amber:  { card: "border-amber-200 dark:border-amber-800", icon: "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400", text: "text-amber-700 dark:text-amber-300", ring: "ring-amber-500/20" },
-  blue:   { card: "border-blue-200 dark:border-blue-800", icon: "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400", text: "text-blue-700 dark:text-blue-300", ring: "ring-blue-500/20" },
-  emerald:{ card: "border-emerald-200 dark:border-emerald-800", icon: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400", text: "text-emerald-700 dark:text-emerald-300", ring: "ring-emerald-500/20" },
+  amber: { card: "border-amber-200 dark:border-amber-800", icon: "bg-amber-100 dark:bg-amber-900/40 text-amber-600 dark:text-amber-400", text: "text-amber-700 dark:text-amber-300", ring: "ring-amber-500/20" },
+  blue: { card: "border-blue-200 dark:border-blue-800", icon: "bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400", text: "text-blue-700 dark:text-blue-300", ring: "ring-blue-500/20" },
+  emerald: { card: "border-emerald-200 dark:border-emerald-800", icon: "bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400", text: "text-emerald-700 dark:text-emerald-300", ring: "ring-emerald-500/20" },
   violet: { card: "border-violet-200 dark:border-violet-800", icon: "bg-violet-100 dark:bg-violet-900/40 text-violet-600 dark:text-violet-400", text: "text-violet-700 dark:text-violet-300", ring: "ring-violet-500/20" },
+  cyan: { card: "border-cyan-200 dark:border-cyan-800", icon: "bg-cyan-100 dark:bg-cyan-900/40 text-cyan-600 dark:text-cyan-400", text: "text-cyan-700 dark:text-cyan-300", ring: "ring-cyan-500/20" },
 }
 
 function timeAgo(date: Date): string {
@@ -238,7 +241,7 @@ export default function DashboardPage() {
           })
           return newTriggers
         })
-      } catch {}
+      } catch { }
     }, 5000)
     return () => clearInterval(interval)
   }, [])
@@ -419,7 +422,7 @@ export default function DashboardPage() {
       </motion.div>
 
       {/* Stats Grid */}
-      <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <motion.div variants={itemVariants} className="grid grid-cols-2 lg:grid-cols-5 gap-4">
         {statConfig.map((stat) => {
           const cs = colorStyles[stat.color]
           const value = stats?.[stat.key] ?? 0
@@ -466,15 +469,17 @@ export default function DashboardPage() {
                     <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" vertical={false} />
                     <XAxis
                       dataKey="day"
-                      tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
-                      axisLine={{ stroke: "hsl(var(--border))" }}
-                      tickLine={false}
+                      tick={{
+                        fontSize: 12,
+                        className: "fill-muted-foreground"
+                      }}
                     />
                     <YAxis
                       allowDecimals={false}
-                      tick={{ fontSize: 12, fill: "hsl(var(--muted-foreground))" }}
+                      tick={{ fontSize: 12, }}
                       axisLine={false}
                       tickLine={false}
+                      
                     />
                     <Tooltip
                       contentStyle={{
@@ -487,7 +492,7 @@ export default function DashboardPage() {
                     />
                     <Bar
                       dataKey="count"
-                      fill="hsl(var(--chart-1, 221.2 83.2% 53.3%))"
+                      fill="var(--chart-1)"
                       radius={[4, 4, 0, 0]}
                       maxBarSize={48}
                     />
@@ -607,6 +612,12 @@ export default function DashboardPage() {
               </div>
             </CardHeader>
             <CardContent className="space-y-3">
+              <Link href="/dashboard/workflows">
+                <Button variant="outline" className="w-full justify-start gap-3 h-11 border-cyan-200 dark:border-cyan-800 text-cyan-700 dark:text-cyan-300 hover:bg-cyan-50 dark:hover:bg-cyan-950/20">
+                  <Workflow className="w-4 h-4" />
+                  New Workflow
+                </Button>
+              </Link>
               <Link href="/dashboard/triggers">
                 <Button variant="outline" className="w-full justify-start gap-3 h-11 border-amber-200 dark:border-amber-800 text-amber-700 dark:text-amber-300 hover:bg-amber-50 dark:hover:bg-amber-950/20">
                   <Timer className="w-4 h-4" />

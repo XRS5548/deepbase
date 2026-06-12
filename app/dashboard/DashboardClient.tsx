@@ -24,6 +24,7 @@ import {
   Menu,
   X,
   Mail,
+  Workflow,
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -46,7 +47,15 @@ import { getNotifications, type NotificationItem } from "@/lib/notification-api"
 import { ThemeToggle } from "@/components/theme-toggle"
 import FloatingTrigger from "@/components/floating-trigger"
 
-const navigationItems = [
+type NavChild = { name: string; path: string }
+type NavItem = {
+  name: string
+  icon: any
+  path: string
+  children?: NavChild[]
+}
+
+const navigationItems: { section: string; items: NavItem[] }[] = [
   {
     section: "Main",
     items: [
@@ -55,6 +64,15 @@ const navigationItems = [
       { name: "Databases", icon: Database, path: "/dashboard/databases" },
       { name: "Forms", icon: FormInput, path: "/dashboard/forms" },
       { name: "Triggers", icon: Timer, path: "/dashboard/triggers" },
+      {
+        name: "Workflows",
+        icon: Workflow,
+        path: "/dashboard/workflows",
+        children: [
+          { name: "All Workflows", path: "/dashboard/workflows" },
+          { name: "Logs", path: "/dashboard/workflows/logs" },
+        ],
+      },
       { name: "Emails", icon: Mail, path: "/dashboard/emails" },
     ],
   },
@@ -145,6 +163,21 @@ function SidebarContent({ sidebarOpen, setSidebarOpen, pathname, isMobile, onClo
   isMobile?: boolean
   onCloseMobile?: () => void
 }) {
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(() => {
+    const s = new Set<string>()
+    if (pathname.startsWith("/dashboard/workflows")) s.add("Workflows")
+    return s
+  })
+
+  function toggleExpand(name: string) {
+    setExpandedSections((prev) => {
+      const next = new Set(prev)
+      if (next.has(name)) next.delete(name)
+      else next.add(name)
+      return next
+    })
+  }
+
   const { data: session } = authClient.useSession()
   const user = session?.user
   const initials = user?.name
@@ -185,6 +218,54 @@ function SidebarContent({ sidebarOpen, setSidebarOpen, pathname, isMobile, onClo
             )}
             <div className="space-y-1">
               {section.items.map((item) => {
+                if (item.children && sidebarOpen) {
+                  const isExpanded = expandedSections.has(item.name)
+                  const isActive = pathname === item.path || (item.path !== "/dashboard" && pathname.startsWith(item.path))
+                  return (
+                    <div key={item.name}>
+                      <button
+                        onClick={() => toggleExpand(item.name)}
+                        className={`w-full flex items-center px-3 py-2 rounded-lg transition-colors ${
+                          isActive
+                            ? "bg-accent text-accent-foreground"
+                            : "text-muted-foreground hover:text-foreground"
+                        }`}
+                      >
+                        <item.icon className="w-5 h-5 flex-shrink-0" />
+                        <span className="ml-3 flex-1 text-left truncate text-sm font-medium">{item.name}</span>
+                        <ChevronDown
+                          className={`w-4 h-4 transition-transform duration-200 ${isExpanded ? "rotate-0" : "-rotate-90"}`}
+                        />
+                      </button>
+                      {isExpanded && (
+                        <motion.div
+                          initial={{ height: 0, opacity: 0 }}
+                          animate={{ height: "auto", opacity: 1 }}
+                          className="ml-8 mt-1 space-y-0.5 overflow-hidden"
+                        >
+                          {item.children.map((child) => {
+                            const isChildActive = pathname === child.path
+                            return (
+                              <Link key={child.name} href={child.path} onClick={onCloseMobile}>
+                                <Button
+                                  variant={isChildActive ? "secondary" : "ghost"}
+                                  className={`w-full justify-start px-3 h-8 text-sm ${
+                                    isChildActive
+                                      ? "bg-accent text-accent-foreground"
+                                      : "text-muted-foreground hover:text-foreground"
+                                  } transition-colors duration-200`}
+                                >
+                                  {child.name}
+                                </Button>
+                              </Link>
+                            )
+                          })}
+                        </motion.div>
+                      )}
+                    </div>
+                  )
+                }
+
                 const isActive = pathname === item.path || (item.path !== "/dashboard" && pathname.startsWith(item.path))
                 return (
                   <Link key={item.name} href={item.path} onClick={onCloseMobile}>
@@ -253,7 +334,7 @@ function SidebarContent({ sidebarOpen, setSidebarOpen, pathname, isMobile, onClo
             <DropdownMenuSeparator />
             <DropdownMenuItem
               className="text-destructive cursor-pointer"
-              onClick={() => authClient.signOut()}
+              onClick={() => { authClient.signOut(); window.location.href = "/signin" }}
             >
               <LogOut className="w-4 h-4 mr-2" />
               Sign out
@@ -375,6 +456,12 @@ function Header({ onMenuClick, notifs, unreadCount }: {
                 <DropdownMenuItem className="cursor-pointer">
                   <Timer className="w-4 h-4 mr-2" />
                   Trigger
+                </DropdownMenuItem>
+              </Link>
+              <Link href="/dashboard/workflows">
+                <DropdownMenuItem className="cursor-pointer">
+                  <Workflow className="w-4 h-4 mr-2" />
+                  Workflow
                 </DropdownMenuItem>
               </Link>
             </DropdownMenuContent>
